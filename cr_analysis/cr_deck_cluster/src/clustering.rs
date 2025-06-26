@@ -60,3 +60,28 @@ pub fn prepare_data_for_clustering(db_path: &str) -> Result<(Array2<f64>, Vec<St
     // e. Return the matrix and the corresponding deck hashes
     Ok((data_matrix, deck_hashes))
 }
+
+/// Performs K-Means clustering on the given dataset.
+///
+/// # Arguments
+/// * `data` - A 2D array representing the dataset, where rows are samples and columns are features.
+/// * `k` - The number of clusters to form.
+///
+/// # Returns
+/// A 1D array containing the cluster assignments for each data point.
+pub fn run_kmeans(data: &Array2<f64>, k: usize) -> Array1<usize> {
+    use linfa_clustering::KMeans;
+    use linfa::prelude::*;
+    use rand_xoshiro::Xoshiro256Plus; // Use Xoshiro256Plus
+    use rand::SeedableRng;
+    use linfa::DatasetBase; // Import DatasetBase
+
+    let dataset = DatasetBase::from(data.clone()); // Convert data to DatasetBase
+
+    let rng = Xoshiro256Plus::seed_from_u64(42); // Seed Xoshiro256Plus
+    let model = KMeans::params_with_rng(k, rng)
+        .fit(&dataset) // Pass DatasetBase to fit
+        .expect("KMeans fitting failed");
+
+    model.predict(&dataset) // Pass DatasetBase to predict
+}
