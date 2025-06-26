@@ -1,7 +1,9 @@
 use pyo3::prelude::*;
 
-// Declare the new data_loader module to make it available within the crate.
+// Declare the data_loader module.
 pub mod data_loader;
+// Declare the new clustering module.
+pub mod clustering;
 
 /// Formats the sum of two numbers as string.
 #[pyfunction]
